@@ -1,0 +1,6 @@
+---
+
+- name: Install vault
+  pkgng:
+    name: vault
+    state: present

@@ -1,0 +1,3 @@
+---
+__vault_db_dir: /var/db/vault
+__vault_conf_dir: /usr/local/etc/vault

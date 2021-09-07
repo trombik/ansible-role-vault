@@ -1,0 +1,37 @@
+---
+# tasks file for ansible-role-vault
+
+- include_vars: "{{ ansible_os_family }}.yml"
+
+- include: "install-{{ ansible_os_family }}.yml"
+
+- name: Create log directory
+  file:
+    path: "{{ vault_log_dir }}"
+    mode: 0755
+    owner: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+    state: directory
+  notify: Restart vault
+
+- name: Create db directory
+  file:
+    path: "{{ vault_db_dir }}"
+    mode: 0755
+    owner: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+    state: directory
+  notify: Restart vault
+
+- name: Create vault.conf
+  template:
+    src: vault.conf.j2
+    dest: "{{ vault_conf_file }}"
+    validate: echo %s
+  notify: Restart vault
+
+- name: Start vault
+  service:
+    name: "{{ vault_service }}"
+    enabled: true
+    state: started

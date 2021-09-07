@@ -1,0 +1,9 @@
+---
+vault_user: vault
+vault_group: vault
+vault_log_dir: /var/log/vault
+vault_db_dir: "{{ __vault_db_dir }}"
+vault_service: vault
+vault_conf_dir: "{{ __vault_conf_dir }}"
+vault_conf_file: "{{ __vault_conf_dir }}/vault.conf"
+vault_flags: ""
