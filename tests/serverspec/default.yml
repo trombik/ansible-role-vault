@@ -24,4 +24,3 @@
         vault_syslog_output_enable="YES"
         vault_limits_mlock="{{ vault_mlock_limit }}"
     vault_flags: "{{ os_vault_flags[ansible_os_family] }}"
-    vault_login_class: vault

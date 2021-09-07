@@ -18,6 +18,3 @@ vault_mlock_limit: "{{ __vault_mlock_limit }}"
 vault_extra_packages: "{{ __vault_extra_packages }}"
 vault_flags: ""
 vault_config: ""
-
-# BSD-variants only
-vault_login_class: "{{ __vault_login_class | default(omit) }}"

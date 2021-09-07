@@ -8,4 +8,3 @@ __vault_root_dir: /usr/local/vault
 __vault_extra_packages:
   - textproc/jq
 __vault_mlock_limit: unlimited
-__vault_login_class: daemon
