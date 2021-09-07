@@ -15,9 +15,9 @@ mlock_limit = "2048M"
 case os[:family]
 when "freebsd"
   config = "/usr/local/etc/vault.hcl"
-  extra_packages = %w{ textproc/jq }
+  extra_packages = %w[textproc/jq]
   root_dir = "/usr/local/vault"
-  root_subdirs = %w{ data }
+  root_subdirs = %w[data]
 end
 
 describe file(root_dir) do
