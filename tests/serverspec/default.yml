@@ -3,4 +3,25 @@
   roles:
     - ansible-role-vault
   vars:
-    vault_config: ""
+    vault_root_subdirs:
+      - data
+    vault_config: |
+      storage "raft" {
+        path    = "{{ vault_root_dir }}/data"
+        node_id = "node1"
+      }
+
+      listener "tcp" {
+        address     = "{{ vault_listen_addr }}:{{ vault_listen_port }}"
+        tls_disable = {% if vault_listen_scheme == 'http' %}"true"{% else %}"false"{% endif %}
+      }
+
+      api_addr = "{{ vault_listen_scheme }}://{{ vault_listen_addr }}:{{ vault_listen_port }}"
+      cluster_addr = "{{ vault_culster_listen_sceme }}://{{ vault_cluster_listen_addr }}:{{ vault_cluster_listen_port }}"
+      ui = true
+    os_vault_flags:
+      FreeBSD: |
+        vault_syslog_output_enable="YES"
+        vault_limits_mlock="2048M"
+    vault_flags: "{{ os_vault_flags[ansible_os_family] }}"
+    vault_login_class: vault

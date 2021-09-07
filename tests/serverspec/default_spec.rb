@@ -3,16 +3,14 @@ require "serverspec"
 
 package = "vault"
 service = "vault"
-config  = "/etc/vault/vault.conf"
+config  = "/etc/vault.hcl"
 user    = "vault"
 group   = "vault"
-ports   = [PORTS]
-log_dir = "/var/log/vault"
-db_dir  = "/var/lib/vault"
+ports   = [8200]
 
 case os[:family]
 when "freebsd"
-  config = "/usr/local/etc/vault.conf"
+  config = "/usr/local/etc/vault.hcl"
   db_dir = "/var/db/vault"
 end
 
@@ -22,27 +20,14 @@ end
 
 describe file(config) do
   it { should be_file }
-  its(:content) { should match Regexp.escape("vault") }
-end
-
-describe file(log_dir) do
-  it { should exist }
-  it { should be_mode 755 }
-  it { should be_owned_by user }
-  it { should be_grouped_into group }
-end
-
-describe file(db_dir) do
-  it { should exist }
-  it { should be_mode 755 }
-  it { should be_owned_by user }
-  it { should be_grouped_into group }
+  its(:content) { should match Regexp.escape("Managed by ansible") }
 end
 
 case os[:family]
 when "freebsd"
   describe file("/etc/rc.conf.d/vault") do
     it { should be_file }
+    its(:content) { should match Regexp.escape("Managed by ansible") }
   end
 end
 

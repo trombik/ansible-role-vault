@@ -1,0 +1,17 @@
+--- vault.orig	2021-09-07 04:39:17.733781000 +0000
++++ vault	2021-09-07 04:57:50.355218000 +0000
+@@ -21,6 +21,7 @@
+ #					Default is "info". See daemon(8).
+ # vault_syslog_output_facility (str):	Set syslog facility if syslog enabled.
+ #					Default is "daemon". See daemon(8).
++# vault_limits_mlock (size): allowd memorylocked value in size. Default is 1024M
+ 
+ . /etc/rc.subr
+ 
+@@ -33,6 +34,8 @@
+ : ${vault_user:="vault"}
+ : ${vault_group:="vault"}
+ : ${vault_config:="/usr/local/etc/vault.hcl"}
++: ${vault_limits_mlock:="1024M"}
++: ${vault_limits:="-l ${vault_limits_mlock}"}
+

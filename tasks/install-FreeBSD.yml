@@ -1,6 +1,22 @@
 ---
 
+- name: Install vault_extra_packages
+  pkgng:
+    name: "{{ vault_extra_packages }}"
+
 - name: Install vault
   pkgng:
-    name: vault
+    name: "{{ vault_package }}"
     state: present
+
+- name: Patch security/vault/files/vault.in
+  patch:
+    src: patch-FreeBSD-rcd
+    dest: /usr/local/etc/rc.d/vault
+
+- name: "Create /etc/rc.conf.d/{{ vault_service }}"
+  template:
+    src: FreeBSD.rc.conf.j2
+    dest: "/etc/rc.conf.d/{{ vault_service }}"
+  notify:
+    - Restart vault

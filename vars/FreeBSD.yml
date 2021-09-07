@@ -1,3 +1,11 @@
 ---
-__vault_db_dir: /var/db/vault
-__vault_conf_dir: /usr/local/etc/vault
+__vault_package: security/vault
+__vault_user: vault
+__vault_group: vault
+__vault_service: vault
+__vault_conf_dir: /usr/local/etc
+__vault_root_dir: /usr/local/vault
+__vault_extra_packages:
+  - textproc/jq
+__vault_mlock_limit: unlimited
+__vault_login_class: daemon

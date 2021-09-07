@@ -1,9 +1,23 @@
 ---
-vault_user: vault
-vault_group: vault
-vault_log_dir: /var/log/vault
+vault_package: "{{ __vault_package }}"
+vault_user: "{{ __vault_user }}"
+vault_group: "{{ __vault_group }}"
 vault_db_dir: "{{ __vault_db_dir }}"
-vault_service: vault
+vault_service: "{{ __vault_service }}"
 vault_conf_dir: "{{ __vault_conf_dir }}"
-vault_conf_file: "{{ __vault_conf_dir }}/vault.conf"
+vault_conf_file: "{{ vault_conf_dir }}/vault.hcl"
+vault_root_dir: "{{ __vault_root_dir }}"
+vault_root_subdirs: []
+vault_listen_scheme: http
+vault_listen_addr: 127.0.0.1
+vault_listen_port: 8200
+vault_culster_listen_sceme: http
+vault_cluster_listen_addr: 127.0.0.1
+vault_cluster_listen_port: 8201
+vault_mlock_limit: "{{ __vault_mlock_limit }}"
+vault_extra_packages: "{{ __vault_extra_packages }}"
 vault_flags: ""
+vault_config: ""
+
+# BSD-variants only
+vault_login_class: "{{ __vault_login_class | default(omit) }}"
