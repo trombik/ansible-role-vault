@@ -30,7 +30,8 @@
   template:
     src: vault.hcl.j2
     dest: "{{ vault_conf_file }}"
-    validate: echo %s
+    # TODO validate
+    # validate: echo %s
   notify: Restart vault
 
 - name: Start vault
@@ -38,3 +39,24 @@
     name: "{{ vault_service }}"
     enabled: true
     state: started
+
+- name: Wait for vault to start
+  wait_for:
+    host: "{{ vault_listen_addr }}"
+    port: "{{ vault_listen_port }}"
+    delay: 3
+
+- name: See init status
+  command: vault operator init -status
+  environment:
+    VAULT_ADDR: "{{ vault_listen_scheme }}://{{ vault_listen_addr }}:{{ vault_listen_port }}"
+  register: __register_vault_operator_init
+  changed_when: false
+  # 0 == initialized
+  # 1 == error
+  # 2 == not initialized
+  failed_when: __register_vault_operator_init['rc'] == 1
+
+- name: Include init.yml
+  include_tasks: init.yml
+  when: __register_vault_operator_init['rc'] == 2

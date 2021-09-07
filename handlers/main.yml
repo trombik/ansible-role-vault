@@ -2,5 +2,12 @@
 
 - name: Restart vault
   service:
-    name: vault
+    name: "{{ vault_service }}"
     state: restarted
+  notify: Wait for vault
+
+- name: Wait for vault
+  wait_for:
+    host: "{{ vault_listen_addr }}"
+    port: "{{ vault_listen_port }}"
+    delay: 3

@@ -1,0 +1,37 @@
+---
+# > vault operator init -format=yaml
+# recovery_keys_b64: []
+# recovery_keys_hex: []
+# recovery_keys_shares: 5
+# recovery_keys_threshold: 3
+# root_token: s.InwxfqiZfPRS5B7qL3kGfVYY
+# unseal_keys_b64:
+# - BXQv5Fvxexs+QsneXz4101epOjPIW7m7GojC0ce8xHSA
+# - qmBf9Mhze8Q1/dNP7QxkCKB9+Sp0svLdwlo3qDNHsY3a
+# - Q3U1IUjFJE50pdFOuGITEqQxsy8Ba4POJ9d43lK9EvvW
+# - wDe7dbu9YLGEX156EO2cAbESv36VawKR5q49jvgXpuUr
+# - 7z8Sq1N6M7uSzTMM6Z3iamdJbvrpMKiLz3diAsyJgNCW
+# unseal_keys_hex:
+# - 05742fe45bf17b1b3e42c9de5f3e35d357a93a33c85bb9bb1a88c2d1c7bcc47480
+# - aa605ff4c8737bc435fdd34fed0c6408a07df92a74b2f2ddc25a37a83347b18dda
+# - 4375352148c5244e74a5d14eb8621312a431b32f016b83ce27d778de52bd12fbd6
+# - c037bb75bbbd60b1845f5e7a10ed9c01b112bf7e956b0291e6ae3d8ef817a6e52b
+# - ef3f12ab537a33bb92cd330ce99de26a67496efae930a88bcf776202cc8980d096
+# unseal_shares: 5
+# unseal_threshold: 3
+
+# vault operator init -format=yaml -key-shares=1 -key-threshold=1
+
+- name: Initialize vault
+  command: vault operator init -format=yaml
+  register: __register_vault_operator_init
+  environment:
+    VAULT_ADDR: "{{ vault_listen_scheme }}://{{ vault_listen_addr }}:{{ vault_listen_port }}"
+
+- name: Create initialized information
+  template:
+    src: vault_init.yml.j2
+    dest: "{{ vault_root_dir }}/.vault_init.yml"
+    owner: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+    mode: '0600'
