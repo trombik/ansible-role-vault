@@ -1,6 +1,6 @@
 ---
 
-- name: Read .vault_init.yml
+- name: Get content of .vault_init.yml
   ansible.builtin.slurp:
     src: "{{ vault_root_dir }}/.vault_init.yml"
   register: __register_slurp_vault_init_yml
@@ -11,7 +11,7 @@
     __fact_unseal_keys: "{{ __register_slurp_vault_init_yml['content'] | b64decode | from_yaml }}"
   no_log: yes
 
-- name: Unseal vault via API
+- name: Do unseal vault via API
   ansible.builtin.uri:
     url: "{{ vault_listen_scheme }}://{{ vault_listen_addr }}:{{ vault_listen_port }}/v1/sys/unseal"
     method: PUT
