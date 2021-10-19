@@ -1,0 +1,29 @@
+---
+
+- name: Read .vault_init.yml
+  ansible.builtin.slurp:
+    src: "{{ vault_root_dir }}/.vault_init.yml"
+  register: __register_slurp_vault_init_yml
+  no_log: yes
+
+- name: Set vault_init fact
+  set_fact:
+    __fact_unseal_keys: "{{ __register_slurp_vault_init_yml['content'] | b64decode | from_yaml }}"
+  no_log: yes
+
+- name: Unseal vault via API
+  ansible.builtin.uri:
+    url: "{{ vault_listen_scheme }}://{{ vault_listen_addr }}:{{ vault_listen_port }}/v1/sys/unseal"
+    method: PUT
+    body_format: json
+    body:
+      key: "{{ item }}"
+  with_items: "{{ __fact_unseal_keys['unseal_keys_hex'] }}"
+
+- name: See if vault is unsealed
+  ansible.builtin.uri:
+    url: "{{ vault_listen_scheme }}://{{ vault_listen_addr }}:{{ vault_listen_port }}/v1/sys/seal-status"
+    method: GET
+  register: __register_vault_seal_status
+  failed_when:
+    - __register_vault_seal_status['json']['sealed'] | bool

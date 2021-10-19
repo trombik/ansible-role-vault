@@ -4,6 +4,7 @@
   service:
     name: "{{ vault_service }}"
     state: restarted
+  when: vault_service_restart | bool
   notify: Wait for vault
 
 - name: Wait for vault
