@@ -8,7 +8,7 @@
   include: "install-{{ ansible_os_family }}.yml"
 
 - name: Create vault_root_dir
-  file:
+  ansible.builtin.file:
     path: "{{ vault_root_dir }}"
     mode: 0755
     owner: "{{ vault_user }}"
@@ -17,7 +17,7 @@
   notify: Restart vault
 
 - name: Create vault_root_subdirs
-  file:
+  ansible.builtin.file:
     path: "{{ vault_root_dir }}/{{ item }}"
     mode: 0755
     owner: "{{ vault_user }}"
@@ -27,7 +27,7 @@
   with_items: "{{ vault_root_subdirs }}"
 
 - name: Create vault.conf
-  template:
+  ansible.builtin.template:
     src: vault.hcl.j2
     dest: "{{ vault_conf_file }}"
     # TODO validate
@@ -35,13 +35,13 @@
   notify: Restart vault
 
 - name: Start vault
-  service:
+  ansible.builtin.service:
     name: "{{ vault_service }}"
     enabled: true
     state: started
 
 - name: Wait for vault to start
-  wait_for:
+  ansible.builtin.wait_for:
     host: "{{ vault_listen_addr }}"
     port: "{{ vault_listen_port }}"
     delay: 3

@@ -23,13 +23,13 @@
 # vault operator init -format=yaml -key-shares=1 -key-threshold=1
 
 - name: Initialize vault
-  command: vault operator init -format=yaml
+  ansible.builtin.command: vault operator init -format=yaml
   register: __register_vault_operator_init
   environment:
     VAULT_ADDR: "{{ vault_listen_scheme }}://{{ vault_listen_addr }}:{{ vault_listen_port }}"
 
 - name: Create initialized information
-  template:
+  ansible.builtin.template:
     src: vault_init.yml.j2
     dest: "{{ vault_root_dir }}/.vault_init.yml"
     owner: "{{ vault_user }}"
