@@ -11,6 +11,7 @@ extra_packages = []
 root_dir = ""
 root_subdirs = []
 mlock_limit = "2048M"
+api_url = "http://127.0.0.1:8200"
 
 case os[:family]
 when "freebsd"
@@ -77,7 +78,7 @@ command "env VAULT_ADDR=http://127.0.0.1:8200 vault status" do
   its(:exit_status) { should eq 0 }
 end
 
-command "env VAULT_ADDR=http://127.0.0.1:8200 vault operator init" do
+command "env VAULT_ADDR=http://127.0.0.1:8200 vault operator init -status" do
   its(:stderr) { should eq "" }
   its(:exit_status) { should eq 0 }
 end
@@ -89,4 +90,16 @@ describe file("#{root_dir}/.vault_init.yml") do
   it { should be_grouped_into group }
   it { should be_mode 600 }
   its(:content) { should match Regexp.escape("Created by ansible") }
+end
+
+require "json"
+describe "API" do
+  describe "/v1/sys/seal-status" do
+    it "returns sealed false" do
+      endpoint_url = "#{api_url}/v1/sys/seal-status"
+      r = Specinfra.backend.run_command("curl -s #{endpoint_url}").stdout
+      response = JSON.parse(r)
+      expect(response["sealed"]).to be false
+    end
+  end
 end

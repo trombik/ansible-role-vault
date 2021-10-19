@@ -6,6 +6,7 @@
     vault_mlock_limit: 2048M
     vault_root_subdirs:
       - data
+    vault_service_restart: no
     vault_config: |
       storage "file" {
         path    = "{{ vault_root_dir }}/data"

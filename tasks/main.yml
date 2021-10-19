@@ -46,17 +46,22 @@
     port: "{{ vault_listen_port }}"
     delay: 3
 
-- name: See init status
-  command: vault operator init -status
-  environment:
-    VAULT_ADDR: "{{ vault_listen_scheme }}://{{ vault_listen_addr }}:{{ vault_listen_port }}"
-  register: __register_vault_operator_init
-  changed_when: false
-  # 0 == initialized
-  # 1 == error
-  # 2 == not initialized
-  failed_when: __register_vault_operator_init['rc'] == 1
+- name: See if vault is initialized via API
+  ansible.builtin.uri:
+    url: "{{ vault_listen_scheme }}://{{ vault_listen_addr }}:{{ vault_listen_port }}/v1/sys/init"
+    method: GET
+  register: __register_vault_init_status
 
-- name: Include init.yml
+- name: Include init.yml to initialize vault
   include_tasks: init.yml
-  when: __register_vault_operator_init['rc'] == 2
+  when: not __register_vault_init_status['json']['initialized'] | bool
+
+- name: See if vault is sealed via API
+  ansible.builtin.uri:
+    url: "{{ vault_listen_scheme }}://{{ vault_listen_addr }}:{{ vault_listen_port }}/v1/sys/seal-status"
+    method: GET
+  register: __register_vault_seal_status
+
+- name: Include unseal.yml to unseal vault
+  include_tasks: unseal.yml
+  when: __register_vault_seal_status['json']['sealed'] | bool
